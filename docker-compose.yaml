@@ -1,0 +1,48 @@
+services:
+  srv-ubuntu:
+    image: ubuntu:latest
+    container_name: servidor-ubuntu
+    tty: true
+    networks:
+      - rede-privada-1
+    depends_on:
+      - db-mysql
+
+  db-mysql:
+    image: mysql:8.0
+    container_name: banco-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - vol-mysql:/var/lib/mysql
+    networks:
+      - rede-privada-1
+
+  srv-centos:
+    image: rockylinux:9  
+    container_name: servidor-centos
+    tty: true
+    networks:
+      - rede-privada-2
+    depends_on:
+      - db-postgres
+
+  db-postgres:
+    image: postgres:latest
+    container_name: banco-postgres
+    environment:
+      POSTGRES_PASSWORD: root
+    volumes:
+      - vol-postgres:/var/lib/postgresql/data
+    networks:
+      - rede-privada-2
+
+networks:
+  rede-privada-1:
+    driver: bridge
+  rede-privada-2:
+    driver: bridge
+
+volumes:
+  vol-mysql:
+  vol-postgres:
